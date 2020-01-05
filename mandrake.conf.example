@@ -1,0 +1,5 @@
+{
+    "token": "",
+    "log_channel": "",
+    "database_uri": "postgresql://postgres:postgres@db:5432/Mandrake"
+}
