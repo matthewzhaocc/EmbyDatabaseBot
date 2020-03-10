@@ -1,3 +1,4 @@
+"""mandrake core"""
 import asyncio
 import sys
 
@@ -16,11 +17,12 @@ from mandrake.bot import commands
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s")
 
 def connect_to_database(uri: str) -> asyncpg.pool.Pool:
+    """connects to db"""
     return asyncio.get_event_loop().run_until_complete(database.connect(uri))
 
 
 def run(config: Config):
-
+    """runs everything"""
     print("Welcome to Mandrake!")
 
     print("Connecting to database...")
@@ -37,6 +39,7 @@ def run(config: Config):
     
     @client.event
     async def on_ready():
+        """when bot is connected"""
         print("Connected to Discord!\n")
         print(f"Connected as: {str(client.user)} ({str(client.user.id)})")
         print()
@@ -44,6 +47,7 @@ def run(config: Config):
 
     @client.event
     async def on_message(message: discord.Message):
+        """when a message is received"""
         if message.author.bot:
             return
 
@@ -55,6 +59,7 @@ def run(config: Config):
 
     @client.event
     async def on_error(event_name, *args, **kwargs):
+        """when a error occurs"""
         if not config.log_channel:
             return
         log_channel = client.get_channel(int(config.log_channel))

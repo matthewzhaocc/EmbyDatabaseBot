@@ -1,7 +1,10 @@
+"""initialization stuff"""
+import time
 import asyncpg
 from mandrake import errors
 
 async def connect(uri):
+    """connects to db"""
     while True:
         try:
             return await asyncpg.create_pool(uri)
@@ -10,20 +13,23 @@ async def connect(uri):
             time.sleep(5)
 
 async def create_tables(conn):
-    await conn.execute("""create table if not exists embyusers (
-        discordid bigint,
-        embyuser text,
+    """initialize db"""
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS embyusers (
+        discordid BIGINT,
+        embyuser TEXT,
         primary key (discordid, embyuser)
     )
-    """)
+    """) #suggestion, use sqlalchemy
 
 async def add_emby_user(ctx, embyuser):
+    """create new user"""
     try:
-        row = await ctx.conn.execute("insert into embyusers (discordid, embyuser) values ($1, $2)", ctx.message.author.id, embyuser)
+        row = await ctx.conn.execute("INSERT INTO embyusers (discordid, embyuser) VALUES ($1, $2)", ctx.message.author.id, embyuser)
         return True
     except Exception as e:
         await errors.send_error(ctx, e)
 
 async def check_emby_user(ctx):
-    if await ctx.conn.fetchrow("select from embyusers where discordid = $1", ctx.message.author.id) is not None:
-        return True
+    """check if emvy user exists"""
+    return await ctx.conn.fetchrow("select from embyusers where discordid = $1", ctx.message.author.id) is not None
