@@ -31,5 +31,5 @@ async def add_emby_user(ctx, embyuser):
         await errors.send_error(ctx, e)
 
 async def check_emby_user(ctx):
-    """check if emvy user exists"""
-    return await ctx.conn.fetchrow("select from embyusers where discordid = $1", ctx.message.author.id) is not None
+    if await ctx.conn.fetchrow("select from embyusers where discordid = $1", ctx.message.author.id) is not None:
+        return True
